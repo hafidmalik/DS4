@@ -1,0 +1,175 @@
+// C++ program for printing a prime
+// levels of binary Tree
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// A Tree node
+struct Node {
+	int key;
+	struct Node *left, *right;
+};
+
+// Utility function to create a new node
+Node* newNode(int key)
+{
+	Node* temp = new Node;
+	temp->key = key;
+	temp->left = temp->right = NULL;
+	return (temp);
+}
+
+// Function to check whether node
+// Value is prime or not
+bool isPrime(int n)
+{
+	if (n == 1)
+		return false;
+
+	// Iterate from 2 to sqrt(n)
+	for (int i = 2; i * i <= n; i++) {
+
+		// If it has a factor
+		if (n % i == 0) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+// Function to print a Prime level
+void printLevel(struct Node* queue[],
+				int index, int size)
+{
+	for (int i = index; i < size; i++) {
+		cout << queue[i]->key << " ";
+	}
+
+	cout << endl;
+}
+
+// Function to check whether given level is
+// prime level or not
+bool isLevelPrime(struct Node* queue[],
+				int index, int size)
+{
+	for (int i = index; i < size; i++) {
+		// Check value of node is
+		// pPrime or not
+		if (!isPrime(queue[index++]->key)) {
+			return false;
+		}
+	}
+
+	// Return true if for loop
+	// iIterate completely
+	return true;
+}
+
+// Utility function to get Prime
+// Level of a given Binary tree
+void findPrimeLevels(struct Node* node,
+					struct Node* queue[],
+					int index, int size)
+{
+	// Print root node value, if Prime
+	if (isPrime(queue[index]->key)) {
+		cout << queue[index]->key << endl;
+	}
+
+	// Run while loop
+	while (index < size) {
+		int curr_size = size;
+
+		// Run inner while loop
+		while (index < curr_size) {
+			struct Node* temp = queue[index];
+
+			// Push left child in a queue
+			if (temp->left != NULL)
+				queue[size++] = temp->left;
+
+			// Push right child in a queue
+			if (temp->right != NULL)
+				queue[size++] = temp->right;
+
+			// Increment index
+			index++;
+		}
+
+		// If condition to check, level is
+		// prime or not
+		if (isLevelPrime(
+				queue, index, size - 1)) {
+
+			// Function call to print
+			// prime level
+			printLevel(queue, index, size);
+		}
+	}
+}
+
+// Function to find total no of nodes
+// In a given binary tree
+int findSize(struct Node* node)
+{
+	// Base condition
+	if (node == NULL)
+		return 0;
+
+	return 1
+		+ findSize(node->left)
+		+ findSize(node->right);
+}
+
+// Function to find Prime levels
+// In a given binary tree
+void printPrimeLevels(struct Node* node)
+{
+	int t_size = findSize(node);
+
+	// Create queue
+	struct Node* queue[t_size];
+
+	// Push root node in a queue
+	queue[0] = node;
+
+	// Function call
+	findPrimeLevels(node, queue, 0, 1);
+}
+
+// Driver Code
+int main()
+{
+	/*	 10
+		/ \
+		13	 11
+			/ \
+		19 23
+		/ \ / \
+		21 29 43 15
+				/
+				7 */
+
+	// Create Binary Tree as shown
+
+	Node* root = newNode(10);
+	root->left = newNode(13);
+	root->right = newNode(11);
+
+	root->right->left = newNode(19);
+	root->right->right = newNode(23);
+
+	root->right->left->left = newNode(21);
+	root->right->left->right = newNode(29);
+	root->right->right->left = newNode(43);
+	root->right->right->right = newNode(15);
+	root->right->right->right->left = newNode(7);
+
+	// Print Prime Levels
+	printPrimeLevels(root);
+
+	return 0;
+}
+  
